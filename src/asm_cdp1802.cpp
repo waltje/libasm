@@ -230,6 +230,14 @@ Error AsmCdp1802::parseOperand(StrScanner &scan, Operand &op) const {
     return OK;
 }
 
+Error AsmCdp1802::processPseudo(StrScanner &scan, Insn &insn) {
+    if (strcasecmp_P(insn.name(), PSTR("dc")) == 0)
+        return defineDataConstant(scan, insn, DATA_BYTE_OR_WORD);
+    if (strcasecmp_P(insn.name(), PSTR("org")) == 0)
+        return defineOrigin(scan, insn);
+    return UNKNOWN_DIRECTIVE;
+}
+
 Error AsmCdp1802::encodeImpl(StrScanner &scan, Insn &_insn) {
     AsmInsn insn(_insn);
     Operand op1, op2;
